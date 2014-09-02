@@ -38,8 +38,6 @@ As implemented, it gets workers from Workday and users from Salesforce, compares
 
 To make this Anypoint Template run, there are certain preconditions that must be considered. All of them deal with the preparations in both, that must be made in order for all to run smoothly. **Failling to do so could lead to unexpected behavior of the template.**
 
-Note: The Workday connector currently does not support autopaging functionality out of the box so number of processed objects are limited to the connector's page size.
-
 
 
 ## Salesforce Considerations <a name="salesforceconsiderations"/>
@@ -72,7 +70,7 @@ There are no particular considerations for this Anypoint Template regarding Sieb
 
 ### As source of data
 
-There are no particular considerations for this Anypoint Template regarding Workday as data origin.
+The Workday connector currently does not support autopaging functionality out of the box so number of processed objects are limited to the connector's single page size.
 
 # Run it! <a name="runit"/>
 Simple steps to get Workday to Salesforce Worker Aggregation running.
