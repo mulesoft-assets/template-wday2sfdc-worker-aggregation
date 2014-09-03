@@ -7166,7 +7166,7 @@
 <Field __artificialType="XPATH" __xpath="{=}/workerData/personalData/nameData/legalNameData/nameDetailData/formattedName" containerType="SINGLE" label="formattedName1" name="formattedName1" type="string"/>
 <Field __artificialType="XPATH" __xpath="{=}/workerData/personalData/contactData/emailAddressData/emailAddress" containerType="SINGLE" label="emailAddress" name="emailAddress" type="string"/>
 <Field __artificialType="XPATH" __xpath="{=}/workerReference/ID/value" containerType="SINGLE" label="id1" name="id1" type="string"/>
-<Field __artificialType="XPATH" __xpath="{=}/workerData/userAccountData/userName" containerType="SINGLE" label="Username" name="Username" type="string"/>
+<Field __artificialType="XPATH" __xpath="{=}/workerData/userID" containerType="SINGLE" label="Username" name="Username" type="string"/>
 </Record>
 </Metadata>
 <Metadata __index="1106" __referenceCounter="0" __sourcePath="{}/object/responseData/worker/workerData/employmentData/positionData/workerCompensationCodeData" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="71ff199d-528e-4001-a98c-baed04606d36" _parent_id="__parent_id" _type="Input" id="c78e195b-bcd1-4d71-b1a4-7e57060cd5f1">
@@ -7559,7 +7559,7 @@
   <Mapping cloverField="formattedName1" trim="true" xpath="workerData/personalData/nameData/legalNameData/nameDetailData/formattedName"/>
   <Mapping cloverField="emailAddress" trim="true" xpath="workerData/personalData/contactData/emailAddressData/emailAddress"/>
   <Mapping cloverField="id1" trim="true" xpath="workerReference/ID/value"/>
-  <Mapping cloverField="Username" trim="true" xpath="workerData/userAccountData/userName"/>
+  <Mapping cloverField="Username" trim="true" xpath="workerData/userID"/>
 </Context>
 ]]></attr>
 <attr name="_data_format"><![CDATA[JAVA]]></attr>
