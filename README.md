@@ -63,7 +63,7 @@ In order to have this template working as expected, you should be aware of your 
 
 ### As destination of data
 
-There are no particular considerations for this Anypoint Template regarding Siebel as data destination.
+There are no particular considerations for this Anypoint Template regarding Salesforce as data destination.
 
 
 ## Workday Considerations <a name="workdayconsiderations"/>
@@ -71,6 +71,7 @@ There are no particular considerations for this Anypoint Template regarding Sieb
 ### As source of data
 
 The Workday connector currently does not support autopaging functionality out of the box so number of processed objects are limited to the connector's single page size.
+
 
 # Run it! <a name="runit"/>
 Simple steps to get Workday to Salesforce Worker Aggregation running.
