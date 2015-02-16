@@ -104,13 +104,13 @@ This flow has Exception Strategy that basically consists on invoking the *defaul
 
 
 $H$H# Gather Data Flow
-Mainly consisting of two calls (Queries) to Workday and SalesForce and storing each response on the Invocation Variable named *workersFromWorkday* or *usersFromSalesforce* accordingly.
+Mainly consisting of two calls (Queries) to SalesForce and storing each response on the Invocation Variable named *workersFromWorkday* or *usersFromSalesforce* accordingly.
 
-$H$H# Aggregation Flow
-[Java Transformer](http://www.mulesoft.org/documentation/display/current/Java+Transformer+Reference) responsible for aggregating the results from the two SalesForce Org Users.
+[Scatter Gather](http://www.mulesoft.org/documentation/display/current/Scatter-Gather) is responsible for aggregating the results from the Workday Workers and Salesforce Org Users.
 Criteria and format applied:
-+ Transformer receives a Mule Message with the two Invocation variables *workersFromWorkday* and *usersFromSalesforce* to result in List of Maps with keys: **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce** and 
-**UserNameInSalesforce**.
+
++ Scatter Gather component implements an aggregation strategy that results in List of Maps with keys: **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce**.
+
 + Workers and Users will be matched by mail, that is to say, a record in Workday and Salesforce organisations with same mail is considered the same worker (user).
 
 $H$H# Format Output Flow
