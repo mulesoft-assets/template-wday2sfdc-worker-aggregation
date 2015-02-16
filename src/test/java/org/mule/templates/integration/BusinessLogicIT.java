@@ -14,6 +14,7 @@ import org.mule.streaming.ConsumerIterator;
 import org.mule.tck.junit4.rule.DynamicPort;
 import org.mule.templates.transformers.WorkersAndUsersMerge;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,35 +28,23 @@ import java.util.Set;
 public class BusinessLogicIT extends AbstractTemplateTestCase {
 
     @Rule
-    public DynamicPort port = new DynamicPort("http.port");
+	public DynamicPort port = new DynamicPort("http.port");
 
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
-    @Test
-    public void testGatherDataFlow() throws Exception {
-
-        SubflowInterceptingChainLifecycleWrapper flow = getSubFlow("gatherDataFlow");
-        flow.initialise();
-
-        MuleEvent event = flow.process(getTestEvent("", MessageExchangePattern.REQUEST_RESPONSE));
-        Set<String> flowVariables = event.getFlowVariableNames();
-
-        Assert.assertTrue("The variable workersFromWorkday is missing.", flowVariables.contains(WorkersAndUsersMerge.WORKDAY_WORKERS));
-        Assert.assertTrue("The variable usersFromSalesforce is missing.", flowVariables.contains(WorkersAndUsersMerge.SALESFORCE_USERS));
-
-        List<Map<String, String>> workersFromWorkday = event.getFlowVariable(WorkersAndUsersMerge.WORKDAY_WORKERS);
-        ConsumerIterator<Map<String, String>> usersFromSalesforce = event.getFlowVariable(WorkersAndUsersMerge.SALESFORCE_USERS);
-
-        Assert.assertTrue("There should be users in the variable workersFromWorkday.", workersFromWorkday.size() != 0);
-        Assert.assertTrue("There should be users in the variable usersFromSalesforce.", usersFromSalesforce.size() != 0);
-    }
-
+	@Test
+	public void testMainFlow() throws Exception {
+		MuleEvent event = runFlow("mainFlow");
+		Assert.assertTrue("The payload should not be null.", "Please find attached your Users Report".equals(event.getMessage().getPayload()));
+	}
+	
+	@Test
+	public void testGatherDataFlow() throws Exception {
+		SubflowInterceptingChainLifecycleWrapper flow = getSubFlow("gatherDataFlow");
+		flow.setMuleContext(muleContext);
+		flow.initialise();
+		flow.start();
+		MuleEvent event = flow.process(getTestEvent("", MessageExchangePattern.REQUEST_RESPONSE));
+		List<Map<String, String>> mergedUserList = (List<Map<String, String>>)event.getMessage().getPayload();
+		
+		Assert.assertTrue("There should be users from source A or source B.", !mergedUserList.isEmpty());
+	} 
 }

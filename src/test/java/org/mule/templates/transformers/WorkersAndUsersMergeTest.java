@@ -11,9 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mule.DefaultMuleMessage;
 import org.mule.api.MuleContext;
-import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 
 import java.util.ArrayList;
@@ -33,12 +31,8 @@ public class WorkersAndUsersMergeTest {
         List<Map<String, String>> workers = createUserLists("A", 0, 1);
         List<Map<String, String>> users = createUserLists("B", 1, 2);
 
-        MuleMessage message = new DefaultMuleMessage(null, muleContext);
-        message.setInvocationProperty(WorkersAndUsersMerge.WORKDAY_WORKERS, workers);
-        message.setInvocationProperty(WorkersAndUsersMerge.SALESFORCE_USERS, users.iterator());
-
         WorkersAndUsersMerge transformer = new WorkersAndUsersMerge();
-        List<Map<String, String>> mergedList = (List<Map<String, String>>) transformer.transform(message, "UTF-8");
+        List<Map<String, String>> mergedList = (List<Map<String, String>>) transformer.mergeList(workers, users);
 
         System.out.println(mergedList);
         Assert.assertEquals("The merged list obtained is not as expected", createExpectedList(), mergedList);

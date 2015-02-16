@@ -6,11 +6,6 @@
 
 package org.mule.templates.transformers;
 
-import com.google.common.collect.Lists;
-import org.mule.api.MuleMessage;
-import org.mule.api.transformer.TransformerException;
-import org.mule.transformer.AbstractMessageTransformer;
-
 import java.util.*;
 
 /**
@@ -19,25 +14,10 @@ import java.util.*;
  *
  * @author aurel.medvegy
  */
-public class WorkersAndUsersMerge extends AbstractMessageTransformer {
+public class WorkersAndUsersMerge {
 
     public static final String WORKDAY_WORKERS = "workersFromWorkday";
     public static final String SALESFORCE_USERS = "usersFromSalesforce";
-
-    @Override
-    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
-
-        return mergeList(getWorkersList(message, WORKDAY_WORKERS), getUsersList(message, SALESFORCE_USERS));
-    }
-
-    private List<Map<String, String>> getUsersList(MuleMessage message, String propertyName) {
-        Iterator<Map<String, String>> iterator = message.getInvocationProperty(propertyName);
-        return Lists.newArrayList(iterator);
-    }
-
-    private List<Map<String, String>> getWorkersList(MuleMessage message, String propertyName) {
-        return message.getInvocationProperty(propertyName);
-    }
 
     /**
      * The method will merge the users from the two lists creating a new one.
@@ -46,7 +26,7 @@ public class WorkersAndUsersMerge extends AbstractMessageTransformer {
      * @param usersFromSalesforce users from Salesforce
      * @return a list with the merged content of the to input lists
      */
-    private List<Map<String, String>> mergeList(List<Map<String, String>> workersFromWorkday, List<Map<String, String>> usersFromSalesforce) {
+    List<Map<String, String>> mergeList(List<Map<String, String>> workersFromWorkday, List<Map<String, String>> usersFromSalesforce) {
 
         List<Map<String, String>> mergedUsersList = new ArrayList<Map<String, String>>();
 
@@ -70,7 +50,6 @@ public class WorkersAndUsersMerge extends AbstractMessageTransformer {
                 mergedUser.put("UserNameInSalesforce", userFromSalesforce.get("Username"));
                 mergedUsersList.add(mergedUser);
             }
-
         }
         return mergedUsersList;
     }
