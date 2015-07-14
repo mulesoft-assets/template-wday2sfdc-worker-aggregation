@@ -1,5 +1,5 @@
 
-# Anypoint Template: Workday to Salesforce Worker Aggregation
+# Anypoint Template: Workday and Salesforce Worker Aggregation
 
 + [License Agreement](#licenseagreement)
 + [Use Case](#usecase)
@@ -28,15 +28,15 @@ Please review the terms of the license before downloading and using this templat
 # Use Case <a name="usecase"/>
 As a Salesforce admin I want to aggregate users from Workday and Salesforce and compare them to see which users can only be found in one of the two and which users are in both instances. 
 
-For practical purposes this Template will generate the result in the format of a CSV Report sent by mail.
+For practical purposes this Template will generate the result in the format of a CSV Report sent by E-mail.
 
 This Template should serve as a foundation for extracting data from two systems, aggregating data, comparing values of fields for the objects, and generating a report on the differences. 
 
-As implemented, it gets workers from Workday and users from Salesforce, compares by the email address of the workers and users, and generates a CSV file which shows workers in Workday, users in Salesforce. The report is then emailed to a configured group of email addresses.
+As implemented, it gets workers from Workday and users from Salesforce, compares by the E-mail address of the workers and users, and generates a CSV file which shows workers in Workday, users in Salesforce. The report is then emailed to a configured group of E-mail addresses.
 
 # Considerations <a name="considerations"/>
 
-To make this Anypoint Template run, there are certain preconditions that must be considered. All of them deal with the preparations in both, that must be made in order for all to run smoothly. **Failling to do so could lead to unexpected behavior of the template.**
+To run this Anypoint Template, there are certain preconditions that must be considered. All of them deal with the preparations in both, that must be made in order for all to run smoothly. **Failling to do so could lead to unexpected behavior of the template.**
 
 
 
@@ -73,8 +73,12 @@ There are no particular considerations for this Anypoint Template regarding Sale
 The Workday connector currently does not support autopaging functionality out of the box so number of processed objects are limited to the connector's single page size.
 
 
+
+
+
+
 # Run it! <a name="runit"/>
-Simple steps to get Workday to Salesforce Worker Aggregation running.
+Simple steps to get Workday and Salesforce Worker Aggregation running.
 
 
 ## Running on premise <a name="runonopremise"/>
@@ -137,7 +141,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sfdc.username `joan.baez@orgb`
 + sfdc.password `JoanBaez456`
 + sfdc.securityToken `ces56arl7apQs56XTddf34X`
-+ sfdc.url `https://login.salesforce.com/services/Soap/u/26.0`
++ sfdc.url `https://login.salesforce.com/services/Soap/u/32.0`
 
 
 #### SMPT Services configuration
@@ -154,15 +158,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + attachment.name `OrderedReport.csv`
 
 # API Calls <a name="apicalls"/>
-SalesForce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. User Anypoint Template calls to the API can be calculated using the formula:
-
-***1 + UsersToSync + UsersToSync / CommitSize***
-
-Being ***UsersToSync*** the number of Users to be synchronized on each run. 
-
-The division by ***CommitSize*** is because by default, for each Upsert API Call, Users are gathered in groups of a number defined by the Commit Size property. Also consider that this calls are executed repeatedly every polling cycle.	
-
-For instance if 10 records are fetched from origin instance, then 12 api calls will be made (1 + 10 + 1).
+SalesForce imposes limits on the number of API Calls that can be made. In this template there is only one call made so this is not something to worry about.
 
 
 # Customize It!<a name="customizeit"/>
@@ -185,50 +181,50 @@ In the visual editor they can be found on the *Global Element* tab.
 
 
 ## businessLogic.xml<a name="businesslogicxml"/>
-Functional aspect of the Template is implemented on this XML, directed by one flow responsible of conducting the aggregation of data, comparing records and finally formating the output, in this case being a report.
-The *mainFlow* organises the job in three different steps and finally invokes the *outboundFlow* that will deliver the report to the corresponding outbound endpoint.
+Functional aspect of the Template is implemented in this XML, directed by one flow responsible for aggregation of data, comparing records and finally formating the output, in this case being a report.
+The *mainFlow* organizes the job in three different steps and finally invokes the *outboundFlow* that will deliver the report to the corresponding outbound endpoint.
 This flow has Exception Strategy that basically consists on invoking the *defaultChoiseExceptionStrategy* defined in *errorHandling.xml* file.
 
 
 ### Gather Data Flow
-Mainly consisting of two calls (Queries) to SalesForce and storing each response on the Invocation Variable named *workersFromWorkday* or *usersFromSalesforce* accordingly.
+Mainly consisting of two calls (Queries) to SalesForce and storing each response to the Invocation Variable named *workersFromWorkday* or *usersFromSalesforce* accordingly.
 
 [Scatter Gather](http://www.mulesoft.org/documentation/display/current/Scatter-Gather) is responsible for aggregating the results from the Workday Workers and Salesforce Org Users.
 Criteria and format applied:
 
-+ Scatter Gather component implements an aggregation strategy that results in List of Maps with keys: **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce**.
++ Scatter Gather component implements an aggregation strategy that results in List of Maps with keys: **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce**, **UserNameInSalesforce**.
 
-+ Workers and Users will be matched by mail, that is to say, a record in Workday and Salesforce organisations with same mail is considered the same worker (user).
++ Workers and Users will be matched by E-mail, that is to say, a record in Workday and Salesforce organisations with the same E-mail is considered the same worker (user).
 
 ### Format Output Flow
-+ [Java Transformer](http://www.mulesoft.org/documentation/display/current/Java+Transformer+Reference) responsible for sorting the list of users in the following order:
++ [Java Transformer](http://www.mulesoft.org/documentation/display/current/Java+Transformer+Reference) responsible for sorting the list of records in the following order:
 
 1. Workers only in Workday
 2. Users only in Salesforce
 3. Workers and Users in both Workday and Salesforce
 
-All records ordered alphabetically by mail within each category.
+All records ordered alphabetically by E-mail within each category.
 If you want to change this order then the *compare* method should be modified.
 
-+ CSV Report [DataMapper](http://www.mulesoft.org/documentation/display/current/Datamapper+User+Guide+and+Reference) transforming the List of Maps in CSV with headers **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce** and **UserNameInSalesforce**.
-+ An [Object to string transformer](http://www.mulesoft.org/documentation/display/current/Transformers) is used to set the payload as an String.
++ CSV Report is generated by [Anypoint DataWeave transformer](https://developer.mulesoft.com/docs/display/current/DataWeave) transforming the List of Maps in CSV with headers **Name**, **Email**, **IDInWorkday**, **WorkerNameInWorkday**, **IDInSalesforce** and **UserNameInSalesforce**.
++ An [Object to String transformer](http://www.mulesoft.org/documentation/display/current/Transformers) is used to set the payload as an String.
 
 
 
 ## endpoints.xml<a name="endpointsxml"/>
-This is the file where you will found the inbound and outbound sides of your integration app.
-This Template has an [HTTP Inbound Endpoint](http://www.mulesoft.org/documentation/display/current/HTTP+Endpoint+Reference) as the way to trigger the use case and an [SMTP Transport](http://www.mulesoft.org/documentation/display/current/SMTP+Transport+Reference) as the outbound way to send the report.
+This is the file where you will find the inbound and outbound sides of your integration app.
+This Template has an [HTTP Listener Connector](http://www.mulesoft.org/documentation/display/current/HTTP+Connector) as the way to trigger the use case and an [SMTP Transport](http://www.mulesoft.org/documentation/display/current/SMTP+Transport+Reference) as the outbound way to send the report.
 
 ### Trigger Flow
-**HTTP Inbound Endpoint** - Start Report Generation
-+ `${http.port}` is set as a property to be defined either on a property file or in CloudHub environment variables.
+**HTTP Listener Connector** - Start Report Generation
++ `${http.port}` is a property to be defined either in a property file or in CloudHub environment variables.
 + The path configured by default is `generatereport` and you are free to change for the one you prefer.
 + The host name for all endpoints in your CloudHub configuration should be defined as `localhost`. CloudHub will then route requests from your application domain URL to the endpoint.
 
 ### Outbound Flow
 **SMTP Outbound Endpoint** - Send Mail
-+ Both SMTP Server configuration and the actual mail to be sent are defined in this endpoint.
-+ This flow is going to be invoked from the flow that does all the functional work: *mainFlow*, the same that is invoked from the Inbound Flow upon triggering of the HTTP Endpoint.
++ Both SMTP Server configuration and the actual E-mail to be sent are defined in this endpoint.
++ This flow is going to be invoked from the flow that does all the functional work: *mainFlow*, the same that is invoked from the Inbound Flow upon triggering the HTTP Listener Connector.
 
 
 
