@@ -37,7 +37,7 @@ public class WorkersAndUsersMerge {
             mergedUser.put("WorkerNameInWorkday", userFromWorkday.get("Username"));
             mergedUsersList.add(mergedUser);
         }
-
+        
         // Add the new users from Salesforce and update the exiting ones
         for (Map<String, String> userFromSalesforce : usersFromSalesforce) {
             Map<String, String> userFromWorkday = findUserInList(userFromSalesforce.get("Email"), mergedUsersList);

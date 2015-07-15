@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wd-hr="http://www.mulesoft.org/schema/mule/wd-hr" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
-      xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-      xmlns:spring="http://www.springframework.org/schema/beans"
-      version="EE-3.6.0"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+<mule version="EE-3.7.0"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" 
+	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" 
+	xmlns:wd-hr="http://www.mulesoft.org/schema/mule/wd-hr" 
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+    xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/wd-hr http://www.mulesoft.org/schema/mule/wd-hr/current/mule-wd-hr.xsd
-http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
-http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd">
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
 
-    <data-mapper:config name="csvreport_grf" transformationGraphPath="csvreport.grf" doc:name="DataMapper"/>
-    <data-mapper:config name="workdayWorkers_to_maps" transformationGraphPath="workdayWorkers_to_maps.grf" doc:name="workdayWorkers_to_maps"/>
     
-    <flow name="mainFlow" doc:name="mainFlow" doc:description="This flow is the entry point to the Template business logic.
+    <flow name="mainFlow"  doc:description="This flow is the entry point to the Template business logic.
 
 This flow should control the direction of the application, and it should be called by the different endpoints that your Template exposes to trigger it.">
         <flow-ref name="gatherDataFlow" doc:name="call gatherDataFlow"/>
@@ -24,28 +26,48 @@ This flow should control the direction of the application, and it should be call
         <flow-ref name="formatOutputFlow" doc:name="call formatOutputFlow"/>
         <flow-ref name="outboundFlow" doc:name="call outboundFlow"/>
         <exception-strategy ref="defaultChoiceExceptionStrategy" doc:name="Reference Exception Strategy"/>
-    </flow>    
-    
-    <sub-flow name="gatherDataFlow" >
+    </flow>
+    <flow name="gatherDataFlow" processingStrategy="synchronous">
         <scatter-gather doc:name="Scatter-Gather">
             <custom-aggregation-strategy class="org.mule.templates.transformers.WorkerMergeAggregationStrategy"/>
-            <flow-ref name="workdayRetrievalMapperFlow" doc:name="call workdayRetrievalMapperFlow"/>
+            <processor-chain doc:name="Processor Chain">
+                <wd-hr:get-workers config-ref="WorkdayHumanResource" workersRequest-ref="#[new com.workday.hr.GetWorkersRequestType()]" doc:name="get Workers from Workday"/>
+                <dw:transform-message doc:name="transform Workday's workers to map of values">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%input payload application/java
+%output application/java
+%var response = payload as :object { class: "com.workday.hr.GetWorkersResponseType" }
+---
+response.responseData.worker map {
+	Name 		: $.workerData.personalData.nameData.legalNameData.nameDetailData.formattedName,
+	Email 		: $.workerData.personalData.contactData.emailAddressData[0].emailAddress,
+	Username 	: $.workerData.userID,
+	Id 			: $.workerReference.ID[0].value
+}]]></dw:set-payload>
+                </dw:transform-message>
+            </processor-chain>
             <sfdc:query config-ref="Salesforce" query="dsql:SELECT Name, Email, Username, Id  FROM User" doc:name="query all users from SalesForce instance"/>
-        
         </scatter-gather>
-    </sub-flow>
+    </flow>
 
-    <sub-flow name="workdayRetrievalMapperFlow" >
-        <processor-chain doc:name="Processor Chain">
-            <wd-hr:get-workers config-ref="WorkdayHumanResource" workersRequest-ref="#[new com.workday.hr.GetWorkersRequestType()]" doc:name="get Workers from Workday"/>
-            <data-mapper:transform config-ref="workdayWorkers_to_maps" doc:name="transform Workday's workers to map of values"/>
-        </processor-chain>
-    </sub-flow>
-    
-    <sub-flow name="formatOutputFlow" >
+    <flow name="formatOutputFlow" processingStrategy="synchronous">
         <custom-transformer class="org.mule.templates.transformers.SortWorkersAndUsersList" doc:name="Custom component to sort users list"/>
-        <data-mapper:transform config-ref="csvreport_grf" doc:name="transform Collection of Maps to CSV Format"/>
+        <dw:transform-message doc:name="transform Collection of Maps to CSV Format">
+            <dw:set-payload><![CDATA[%dw 1.0
+%input payload application/java
+%output application/csv header=true
+---
+payload map {
+	"Email" 					: $.Email,
+	"Name" 						: $.Name,
+	"Id in Workday" 			: $.IDInWorkday,
+	"Username in Workday"		: $.WorkerNameInWorkday,
+	"Id in Salesforce" 			: $.IDInSalesforce,
+	"Username in Salesforce"	: $.UserNameInSalesforce
+}]]></dw:set-payload>
+        </dw:transform-message>
         <object-to-string-transformer doc:name="CSV Output Object to String"/>
-    </sub-flow>
+    </flow>
+
 
 </mule>
