@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule version="EE-3.7.0"
+<mule version="EE-3.7.1"
 	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" 
 	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" 
 	xmlns:wd-hr="http://www.mulesoft.org/schema/mule/wd-hr" 
@@ -34,7 +34,6 @@ This flow should control the direction of the application, and it should be call
                 <wd-hr:get-workers config-ref="WorkdayHumanResource" workersRequest-ref="#[new com.workday.hr.GetWorkersRequestType()]" doc:name="get Workers from Workday"/>
                 <dw:transform-message doc:name="transform Workday's workers to map of values">
                     <dw:set-payload><![CDATA[%dw 1.0
-%input payload application/java
 %output application/java
 %var response = payload as :object { class: "com.workday.hr.GetWorkersResponseType" }
 ---
@@ -54,7 +53,6 @@ response.responseData.worker map {
         <custom-transformer class="org.mule.templates.transformers.SortWorkersAndUsersList" doc:name="Custom component to sort users list"/>
         <dw:transform-message doc:name="transform Collection of Maps to CSV Format">
             <dw:set-payload><![CDATA[%dw 1.0
-%input payload application/java
 %output application/csv header=true
 ---
 payload map {
