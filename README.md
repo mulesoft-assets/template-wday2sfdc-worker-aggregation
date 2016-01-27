@@ -133,10 +133,10 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + http.port `9090` 
 
 #### Workday Connector configuration for company A
- + wdayf.user `wday_user`
- + wdayf.tenant `your_tenant_name`
- + wdayf.password `wday_password`
- + wdayf.hostname `your_impl-cc.workday.com`
+ + wday.user `wday_user`
+ + wday.tenant `your_tenant_name`
+ + wday.password `wday_password`
+ + wday.hostname `your_impl-cc.workday.com`
 
 #### SalesForce Connector configuration for company B
 + sfdc.username `joan.baez@orgb`
