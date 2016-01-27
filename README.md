@@ -132,10 +132,11 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 ### Application configuration
 + http.port `9090` 
 
-#### SalesForce Connector configuration for company A
-+ wday.username `bob.dylan@orga`
-+ wday.password `DylanPassword123`
-+ wday.endpoint `http://localhost:8080/ccx/service/company_pt1/Human_Resources/v21.1`
+#### Workday Connector configuration for company A
+ + wday.user `wday_user`
+ + wday.tenant `your_tenant_name`
+ + wday.password `wday_password`
+ + wday.hostname `your_impl-cc.workday.com`
 
 #### SalesForce Connector configuration for company B
 + sfdc.username `joan.baez@orgb`
@@ -144,7 +145,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sfdc.url `https://login.salesforce.com/services/Soap/u/32.0`
 
 
-#### SMPT Services configuration
+#### SMTP Services configuration
 + smtp.host `smtp.gmail.com`
 + smtp.port `587`
 + smtp.user `exampleuser@gmail.com`

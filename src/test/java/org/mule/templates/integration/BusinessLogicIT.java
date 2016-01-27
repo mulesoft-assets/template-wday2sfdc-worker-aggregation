@@ -6,18 +6,14 @@
 
 package org.mule.templates.integration;
 
-import org.junit.*;
-import org.mule.MessageExchangePattern;
-import org.mule.api.MuleEvent;
-import org.mule.processor.chain.SubflowInterceptingChainLifecycleWrapper;
-import org.mule.streaming.ConsumerIterator;
-import org.mule.tck.junit4.rule.DynamicPort;
-import org.mule.templates.transformers.WorkersAndUsersMerge;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mule.api.MuleEvent;
+import org.mule.tck.junit4.rule.DynamicPort;
 
 /**
  * The objective of this class is to validate the correct behavior of the flows for this Mule Template that
