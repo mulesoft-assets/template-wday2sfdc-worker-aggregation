@@ -27,7 +27,7 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
 	
 	<wd-connector:config name="Workday__Basic" username="${wday.user}" password="${wday.password}" tenantName="${wday.tenant}" hostName="${wday.hostname}" doc:name="Workday: Basic"/>
 
-    <sfdc:config name="Salesforce" username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.securityToken}" url="${sfdc.url}" doc:name="Salesforce" doc:description="Your SalesForce instances.">
+    <sfdc:config name="Salesforce" username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.securityToken}" url="${sfdc.url}" doc:name="Salesforce" doc:description="Your SalesForce instances." disableSessionInvalidation="true">
         <sfdc:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </sfdc:config>
 
