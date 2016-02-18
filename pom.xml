@@ -30,14 +30,6 @@
                             <groupId>org.mule.modules</groupId>
                             <artifactId>workday-connector</artifactId>
                         </inclusion>
-                        <inclusion>
-							<groupId>org.mule.modules</groupId>
-							<artifactId>mule-module-extensions-support</artifactId>
-						</inclusion>
-						<inclusion>
-							<groupId>org.mule.modules</groupId>
-							<artifactId>mule-module-extensions-spring-support</artifactId>
-						</inclusion>
 					</inclusions>
 				</configuration>
 			</plugin>
@@ -79,33 +71,11 @@
             <artifactId>workday-connector</artifactId>
             <version>${wday.version}</version>
         </dependency>
-        <dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-boot-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-devkit-support</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-spring-config</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-extensions-support</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-extensions-spring-support</artifactId>
-			<version>${mule.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
