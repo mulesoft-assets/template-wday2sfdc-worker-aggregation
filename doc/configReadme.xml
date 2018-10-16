@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version='1.0' encoding='utf-8'?>
 <configuration>
 	<placeholders>
 		<placeholder id="template_name">Workday and Salesforce Worker Aggregation</placeholder>
@@ -7,37 +7,37 @@
 		<section id="use_case">
 As a Salesforce admin I want to aggregate users from Workday and Salesforce and compare them to see which users can only be found in one of the two and which users are in both instances. 
 
-For practical purposes this Template will generate the result in the format of a CSV Report sent by E-mail.
+For practical purposes this Template will generate the result in the format of a CSV Report sent by Email.
 
-This Template should serve as a foundation for extracting data from two systems, aggregating data, comparing values of fields for the objects, and generating a report on the differences. 
+This template serves as a foundation for extracting data from two systems, aggregating data, comparing values of fields for the objects, and generating a report on the differences. 
 
-As implemented, it gets workers from Workday and users from Salesforce, compares by the E-mail address of the workers and users, and generates a CSV file which shows workers in Workday, users in Salesforce. The report is then emailed to a configured email address.
+As implemented, it gets workers from Workday and users from Salesforce, compares by the Email address of the workers and users, and generates a CSV file which shows workers in Workday, users in Salesforce. The report is then emailed to a configured email address.
 		</section>
 		<section id="considerations">
-<![CDATA[
-To run this Anypoint Template, there are certain preconditions that must be considered. All of them deal with the preparations in both, that must be made in order for all to run smoothly. **Failling to do so could lead to unexpected behavior of the template.**
-]]>
+
+To run this template, there are certain preconditions that must be considered. All of them deal with the preparations in both, that must be made for the template to run smoothly. **Failing to do so could lead to unexpected behavior of the template.**
+
 		</section>
 		<section id="wday_src">
-<![CDATA[
+
 The Workday connector currently does not support autopaging functionality out of the box so number of processed objects are limited to the connector's single page size.
-]]>
+
 		</section>
 		<section id="running_on_cloudhub">
-<![CDATA[
-Once your app is all set and started, supposing you choose as domain name `workdayworkersaggregation` to trigger the use case you just need to hit `http://workdayworkersaggregation.cloudhub.io/generatereport` and the report will be sent to the emails configured.
 
-]]>
+Once your app is all set and started, supposing you choose as domain name `workdayworkersaggregation` to trigger the use case you just need to browse to `http://workdayworkersaggregation.cloudhub.io/generatereport` and the report will be sent to the emails configured.
+
+
 		</section>
 		<section id="default_running_on_premise">
-<![CDATA[
+
 Complete all properties in one of the property files, for example in [mule.prod.properties] (../blob/master/src/main/resources/mule.prod.properties) and run your app with the corresponding environment variable to use it. To follow the example, this will be `mule.env=prod`.
 
-After this, to trigger the use case you just need to hit the local http endpoint with the port you configured in your file. If this is, for instance, `9090` then you should hit: `http://localhost:9090/generatereport` and this will create a CSV report and send it to the mails set.
-]]>
+After this, to trigger the use case you just need to browse to the local http endpoint with the port you configured in your file. If this is, for instance, `9090` then you should browse to: `http://localhost:9090/generatereport` and this will create a CSV report and send it to the mails set.
+
 		</section>
 		<section id="application_configuration">
-		<![CDATA[
+		
 + http.port `9090` 
 
 #### Workday Connector configuration for company A
@@ -61,18 +61,18 @@ After this, to trigger the use case you just need to hit the local http endpoint
 #### Mail details
 + mail.from `exampleuser@gmail.com`
 + mail.to `woody.guthrie@gmail.com`
-+ mail.subject `SFDC Users Report`
-+ mail.body `Users report comparing users from SFDC Accounts`
++ mail.subject `Salesforce Users Report`
++ mail.body `Users report comparing users from Salesforce Accounts`
 + attachment.name `OrderedReport.csv`
-]]>
+
 		</section>
 		<section id="api_calls">
-		<![CDATA[
+		
 SalesForce imposes limits on the number of API Calls that can be made. In this template there is only one call made so this is not something to worry about.
-]]>
+
 		</section>
 		<section id="default_endpoints_xml">
-		<![CDATA[
+		
 This is the file where you will find the inbound side of your integration app.
 This Template has an [HTTP Connector](http://www.mulesoft.org/documentation/display/current/HTTP+Connector) as the way to trigger the use case.
 
@@ -82,10 +82,10 @@ $H$H# Trigger Flow
 + The path configured by default is `generatereport` and you are free to change for the one you prefer.
 + The host name for all endpoints in your CloudHub configuration should be defined as `localhost`. CloudHub will then route requests from your application domain URL to the endpoint.
 
-]]>
+
 		</section>
 		<section id="default_business_logic_xml">
-		<![CDATA[
+		
 Functional aspect of the Template is implemented in this XML, directed by one flow responsible for aggregation of data, comparing records and finally formatting the output, in this case being a report.
 
 Using Scatter-Gather component we are querying the data in different systems. After that the aggregation is implemented in DataWeave 2 script using Transform component.
@@ -96,7 +96,7 @@ Aggregated results are sorted by source of existence:
 3. Workers and Users in both Workday and Salesforce
 
 and transformed to CSV format. Final report in CSV format is sent to email, that you configured in mule.*.properties file.
-]]>
+
 		</section>
 	</sections>
 </configuration>
