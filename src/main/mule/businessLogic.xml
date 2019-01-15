@@ -32,14 +32,14 @@ ns ns0 urn:com.workday/bsvc
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<workday:invoke doc:name="Get workers from Workday" doc:id="b03873c0-535e-43f4-8db6-4975f5867403" config-ref="Workday_Config" service="Human_Resources" operation="Get_Workers"/>
+				<workday:human-resources operation="Get_Workers" doc:name="Get workers from Workday" doc:id="94b09d5c-182f-4b35-b6de-b39ffba837e1" config-ref="Workday_Config"/>
 				<ee:transform doc:name="Transform Workday response" doc:id="f2114fbc-b82d-48ed-be3b-980252e6f446" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:com.workday/bsvc
 ---
-payload.body.ns0#Get_Workers_Response.ns0#Response_Data.*ns0#Worker map ((worker , indexOfWorker) -> {
+payload.ns0#Get_Workers_Response.ns0#Response_Data.*ns0#Worker map ((worker , indexOfWorker) -> {
 	Id: worker.ns0#Worker_Reference.ns0#ID,
 	Name: worker.ns0#Worker_Data.ns0#Personal_Data.ns0#Name_Data.ns0#Legal_Name_Data.ns0#Name_Detail_Data.@ns0#Formatted_Name,
 	Email: worker.ns0#Worker_Data.ns0#Personal_Data.ns0#Contact_Data.ns0#Email_Address_Data.ns0#Email_Address,

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+        
+    <munit:config name="test-suite.xml" />
+
+    <configuration-properties doc:name="Configuration properties" doc:id="e8a04e4a-a91a-4159-b0d2-2d1e96989491" file="mule.test.properties" />
+    <munit:before-test name="test-suite-Before_Test" description="Before tests actions" doc:id="ec2e61e0-b50a-4ad4-900b-6d11ed28ba30">
+		<munit-tools:mock-when doc:name="Mock email processor to avoid sending email" doc:id="61649487-023d-4a86-aba2-ae190b227d2a"
+            processor="email:send">
+            <munit-tools:then-return />
+        </munit-tools:mock-when>
+    </munit:before-test>
+    <munit:test name="test-suite-businessLogicFlowTest" description="Test" doc:id="45f220c0-8d2f-4185-bf89-b24074ff1588">
+        <munit:execution>
+            <flow-ref doc:name="Call businesslogicFlow" doc:id="5d8175a7-38e3-4214-94d4-db1dc32af0ed" name="businesslogicFlow" />
+            <ee:transform doc:name="Filtering test records" doc:id="33ea40fc-d423-4985-9c13-540a24097c9f">
+            <ee:message>
+               <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload filter ($.Email == p('email.sfdc') or $.Email == p('email.wday') or $.Email == p('email.sfdc.wday'))]]>
+               </ee:set-payload>
+            </ee:message>
+         </ee:transform>
+        </munit:execution>
+        <munit:validation>
+             <munit-tools:assert-that doc:name="Assert number of records" doc:id="b739d7ce-2e08-4c10-8941-47aa2251c5ba" expression="#[sizeOf(payload)]" is="#[MunitTools::equalTo(3)]" message="Assert number of records" />
+             <munit-tools:assert-that doc:name="Assert that email in the first record is correct" doc:id="6119fef5-b79b-49a5-9539-0367f3059777" is="#[MunitTools::equalTo(p('email.wday'))]" expression="#[payload[0].Email]" message="The first record is incorrect" />
+             <munit-tools:assert-that doc:name="Assert that first record exists in Workday" doc:id="361e8bc1-d585-4dd7-aadd-eec355ea5c16" expression="#[payload[0].IDInWorkday]" is="#[MunitTools::not(MunitTools::isEmptyOrNullString())]" message="The first record doesn't exist in Workday" />
+             <munit-tools:assert-that doc:name="Assert that first record does not exist in Salesforce" doc:id="d4adc0c1-cb80-4795-8b68-c2e468890ab7" expression="#[payload[0].IDInSFDC]" is="#[MunitTools::isEmptyOrNullString()]" message="The first record exists in Salesforce" />
+             <munit-tools:assert-that doc:name="Assert that email in the second record is correct" doc:id="ae3d91a8-39d4-44c6-bd2b-2d5932f98c59" is="#[MunitTools::equalTo(p('email.sfdc'))]" expression="#[payload[1].Email]" message="The second record is incorrect" />
+             <munit-tools:assert-that doc:name="Assert that second record does not exist in Workday" doc:id="a92054e5-9a73-4b9b-9860-47b7cc9af30d" expression="#[payload[1].IDInWorkday]" is="#[MunitTools::isEmptyOrNullString()]" message="The second record exists in Workday" />
+             <munit-tools:assert-that doc:name="Assert that second record exists in Salesforce" doc:id="f9df1fe2-5ecc-4de2-9151-7e7fd1442780" is="#[MunitTools::not(MunitTools::isEmptyOrNullString())]" expression="#[payload[1].IDInSFDC]" message="The second record doesn't exist in Salesforce" />
+             <munit-tools:assert-that doc:name="Assert that email in the third record is correct" doc:id="b6dda879-1641-4263-abd5-39cc893fcafb" is="#[MunitTools::equalTo(p('email.sfdc.wday'))]" expression="#[payload[2].Email]" message="The third record is incorrect" />
+             <munit-tools:assert-that doc:name="Assert that third record exists in Salesforce" doc:id="273802e6-88c7-4cd2-b1e9-925a056d944b" expression="#[payload[2].IDInSFDC]" is="#[MunitTools::not(MunitTools::isEmptyOrNullString())]" message="The third record doesn't exist in Salesforce" />
+             <munit-tools:assert-that doc:name="Assert that third record exists in Workday" doc:id="67ae4380-e9fc-4272-ad07-879e1415c23d" expression="#[payload[2].IDInWorkday]" is="#[MunitTools::not(MunitTools::isEmptyOrNullString())]" message="The third record doesn't exist in Workday" />
+         </munit:validation>
+    </munit:test>
+</mule>
