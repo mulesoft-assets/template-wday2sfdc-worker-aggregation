@@ -1,8 +1,8 @@
 
-# Anypoint Template: Workday and Salesforce Worker Aggregation	
+# Anypoint Template: Workday and Salesforce Worker Aggregation
 
 <!-- Header (start) -->
-This template aggregates workers from Workday and users from Salesforce into a CSV file. You can modify this basic pattern to collect from one or more different sources and to produce formats other than CSV. Trigger with an HTTP call either manually or programmatically. 
+This template aggregates workers from Workday and users from Salesforce into a CSV file. You can modify this basic pattern to collect from one or more different sources and to produce formats other than CSV. Trigger with an HTTP call either manually or programmatically.
 
 Workers or users are sorted such that the users only in Salesforce appear first, followed by workers only in Workday, and lastly by workers or users found in both systems. The custom sort or merge logic can be easily modified to present the data as needed. This template also serves as a great base for building APIs using the Anypoint Platform.
 
@@ -12,14 +12,14 @@ Aggregation templates can be easily extended to return a multitude of data in mo
 <!-- Header (end) -->
 
 # License Agreement
-This template is subject to the conditions of the <a href="https://s3.amazonaws.com/templates-examples/AnypointTemplateLicense.pdf">MuleSoft License Agreement</a>. Review the terms of the license before downloading and using this template. You can use this template for free with the Mule Enterprise Edition, CloudHub, or as a trial in Anypoint Studio. 
+This template is subject to the conditions of the <a href="https://s3.amazonaws.com/templates-examples/AnypointTemplateLicense.pdf">MuleSoft License Agreement</a>. Review the terms of the license before downloading and using this template. You can use this template for free with the Mule Enterprise Edition, CloudHub, or as a trial in Anypoint Studio.
 # Use Case
 <!-- Use Case (start) -->
-As a Salesforce admin I want to aggregate users from Workday and Salesforce and compare them to see which users can only be found in one of the two and which users are in both instances. 
+As a Salesforce admin I want to aggregate users from Workday and Salesforce and compare them to see which users can only be found in one of the two and which users are in both instances.
 
 For practical purposes this template generates the result in the format of a CSV report sent by email.
 
-This template serves as a foundation for extracting data from two systems, aggregating data, comparing values of fields for the objects, and generating a report on the differences. 
+This template serves as a foundation for extracting data from two systems, aggregating data, comparing values of fields for the objects, and generating a report on the differences.
 
 As implemented, it gets workers from Workday and users from Salesforce, compares by the Email address of the workers and users, and generates a CSV file which shows workers in Workday, users in Salesforce. The final report in CSV format is sent to the emails you configured in the  `mule.*.properties` file.
 <!-- Use Case (end) -->
@@ -95,7 +95,7 @@ After you import your template into Anypoint Studio, follow these steps to run i
 <!-- Running on Studio (end) -->
 
 ### Running on Mule Standalone
-Update the properties in one of the property files, for example in mule.prod.properties, and run your app with a corresponding environment variable. In this example, use `mule.env=prod`. 
+Update the properties in one of the property files, for example in mule.prod.properties, and run your app with a corresponding environment variable. In this example, use `mule.env=prod`.
 
 
 ## Running on CloudHub
@@ -116,7 +116,7 @@ To use this template, configure properties such as credentials, configurations, 
 ### Application Configuration
 <!-- Application Configuration (start) -->
 
-- http.port `9090` 
+- http.port `9090`
 
 #### Workday Connector Configuration for Company A
 
@@ -124,6 +124,7 @@ To use this template, configure properties such as credentials, configurations, 
 - wday.tenant `acme_pt1`
 - wday.password `joanPass123`
 - wday.hostname `your_impl-cc.workday.com`
+- wday.responseTimeout `25000`
 
 #### SalesForce Connector Configuration for Company B
 
