@@ -40,17 +40,16 @@ After this, to trigger the use case you just need to browse to the local http en
 		
 + http.port `9090` 
 
-#### Workday Connector configuration for company A
+#### Workday Connector configuration
  + wday.user `joan`
  + wday.tenant `acme_pt1`
  + wday.password `joanPass123`
  + wday.hostname `your_impl-cc.workday.com`
 
-#### SalesForce Connector configuration for company B
+#### SalesForce Connector configuration
 + sfdc.username `joan.baez@orgb`
 + sfdc.password `JoanBaez456`
 + sfdc.securityToken `ces56arl7apQs56XTddf34X`
-+ sfdc.url `https://login.salesforce.com/services/Soap/u/32.0`
 
 #### SMTP Services configuration
 + smtp.host `smtp.gmail.com`

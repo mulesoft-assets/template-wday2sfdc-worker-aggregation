@@ -118,20 +118,18 @@ To use this template, configure properties such as credentials, configurations, 
 
 - http.port `9090`
 
-#### Workday Connector Configuration for Company A
+#### Workday Connector Configuration
 
 - wday.user `joan`
 - wday.tenant `acme_pt1`
 - wday.password `joanPass123`
 - wday.hostname `your_impl-cc.workday.com`
-- wday.responseTimeout `25000`
 
-#### SalesForce Connector Configuration for Company B
+#### SalesForce Connector Configuration
 
 - sfdc.username `joan.baez@orgb`
 - sfdc.password `JoanBaez456`
 - sfdc.securityToken `ces56arl7apQs56XTddf34X`
-- sfdc.url `https://login.salesforce.com/services/Soap/u/32.0`
 
 #### SMTP Services Configuration
 
