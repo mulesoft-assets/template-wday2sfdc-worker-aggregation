@@ -11,6 +11,7 @@ http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/em
 http://www.mulesoft.org/schema/mule/workday http://www.mulesoft.org/schema/mule/workday/current/mule-workday.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<flow name="businesslogicFlow">
+        <set-payload value="[]" doc:name="Set Payload to avoid issue with scatter-gather" doc:id="a962d857-5c72-4ccf-881a-38dd87847914" />
 		<scatter-gather doc:name="Scatter-Gather">
             <route>
                 <ee:transform doc:name="Prepare Get Workers request" doc:id="5ddb1536-1e04-4131-b020-a946b4d430b1" >
